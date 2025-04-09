@@ -4,6 +4,7 @@ from utils import (
     calculate_cows_and_bulls,
     is_valid_feedback,
 )
+from enums import Perceptions
 
 
 class CodeBreakerAgent(Agent):
@@ -11,8 +12,9 @@ class CodeBreakerAgent(Agent):
         self.possible_numbers = generate_all_4_number_permutations()
         self.guess = None
 
-    def compute(self, perception: str = None) -> str:
-        if not perception:
+    def compute(self, perception: str) -> str:
+        if perception == Perceptions.FIRST_GUESS_PERCEPTION.value:
+            # Return the first guess
             return self._get_latest_guess()
 
         if not is_valid_feedback(perception):

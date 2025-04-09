@@ -1,22 +1,24 @@
 from typing import Optional
 
 from bulls_and_cows_agent import BullsAndCowsAgent
+from enums import Perceptions
 
 
 class GameEnvironment:
     def __init__(self):
+        # Instantiate the agents as players
         self.white_player = BullsAndCowsAgent()
-
         self.black_player = BullsAndCowsAgent()
 
         # Initialize Black and White players
-        self.white_player.compute("B")
-
-        self.black_player.compute("N")
+        self.white_player.compute(Perceptions.WHITE_PLAYER_PERCEPTION.value)
+        self.black_player.compute(Perceptions.BLACK_PLAYER_PERCEPTION.value)
 
         # Get the first guess from White
         # The last response is used as an input in each turn
-        self.last_white_response = self.white_player.compute()
+        self.last_white_response = self.white_player.compute(
+            Perceptions.FIRST_GUESS_PERCEPTION.value
+        )
         self.last_black_response = None
 
         self.current_guesser = "Black"
@@ -31,14 +33,16 @@ class GameEnvironment:
             if self.first_turn:
                 # If it's the first turn, we need to check if the white player
                 # has guessed correctly
-                winner = self.get_winner()
+                winner = self._get_winner()
                 if winner:
                     return winner
 
                 self.last_black_response = black_response
 
                 # Get the first guess from Black at the first turn
-                black_response = self.black_player.compute()
+                black_response = self.black_player.compute(
+                    Perceptions.FIRST_GUESS_PERCEPTION.value
+                )
                 self.first_turn = False
 
             white_response = self.white_player.compute(black_response)
@@ -56,11 +60,11 @@ class GameEnvironment:
             self.current_guesser = "Black"
 
         # Check if any player has won after the last guess
-        winner = self.get_winner()
+        winner = self._get_winner()
         if winner:
             return winner
 
-    def get_winner(self) -> Optional[str]:
+    def _get_winner(self) -> Optional[str]:
         if "0,4" == self.last_white_response:
             return "Black"
         if "0,4" == self.last_black_response:

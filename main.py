@@ -194,7 +194,6 @@ class DummyAgent:
         elif perception.isdigit() and len(perception) == 4:
             # Es un número adivinado por el oponente, calcular picas y fijas
             picas, fijas = calculate_picas_fijas(self.number, perception)
-            print('Perception received')
             self.last_action = f"{picas},{fijas}"
 
         elif ',' in perception:

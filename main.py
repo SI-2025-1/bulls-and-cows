@@ -13,7 +13,7 @@ def generate_all_numbers():
     return [''.join(p) for p in permutations("0123456789", 4)]
 
 def validate_guess(guess: str) -> bool:
-    """Valida que la conjetura sea de 4 dígitos únicos."""
+    """Valída que la conjetura sea de 4 dígitos únicos."""
     return len(guess) == 4 and len(set(guess)) == 4 and guess.isdigit()
 
 def calculate_picas_fijas(candidate: str, guess: str) -> tuple[int, int]:
@@ -90,7 +90,31 @@ class Agent:
             if computed_p == picas and computed_f == fijas:
                 new_possible.append(num)
         self.possible_numbers = new_possible
-
+"""
+### ------ Explicación comunicación ------ ###
+# 
+# Agente B
+#  B -> N      # Blanco confirma que está listo 
+# 
+# Agente N
+#  N -> L      # Negro confirma que está listo
+#  
+# Agente B 
+# L -> 1234    # Guess inicial
+#  
+# Agente N 
+# 1234 -> P,F  # Envia respuesta de calculo picas y fijas
+# 
+# Agente B
+# P,F -> P,F   # Envia confirmación de mensaje recibido
+# 
+# Agente N
+# P,F -> 1234  # Compara con ultimo mensaje emitido, envia guess
+# 
+# El proceso se repite e intercambian posiciones
+# 
+### ------ Explicación comunicación ------ ###
+"""
 class Environment:
     def __init__(self, agent_b, agent_n):
         self.agent_b = agent_b  # Agente Blanco (empieza primero)
@@ -131,7 +155,6 @@ class Environment:
         print("¡Empate! Nadie adivinó el número.")
         return "Draw"
 
-# Crear agentes (con métodos vacíos o implementados)
 class DummyAgent:
 
     def __init__(self):

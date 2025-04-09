@@ -3,11 +3,11 @@ from typing import Optional
 from common.enums import Perceptions
 from environments.environment_interface import EnvironmentInterface
 from environments.environment_player import EnvironmentPlayer
-from agents.bulls_and_cows_agent import BullsAndCowsAgent
+from agents.agent_interface import AgentInterface
 
 
 class BullsAndCowsEnvironment(EnvironmentInterface):
-    def __init__(self, agents: tuple[BullsAndCowsAgent]):
+    def __init__(self, agents: tuple[AgentInterface]):
         super().__init__(agents)
 
         # Instantiate the agents as players

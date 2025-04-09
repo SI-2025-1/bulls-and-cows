@@ -1,14 +1,16 @@
 from typing import Optional
 
-from bulls_and_cows_agent import BullsAndCowsAgent
-from enums import Perceptions
+from common.enums import Perceptions
+from environments.environment_interface import EnvironmentInterface
 
 
-class GameEnvironment:
-    def __init__(self):
+class BullsAndCowsEnvironment(EnvironmentInterface):
+    def __init__(self, agents):
+        super().__init__(agents)
+
         # Instantiate the agents as players
-        self.white_player = BullsAndCowsAgent()
-        self.black_player = BullsAndCowsAgent()
+        self.white_player = self.agents[0]
+        self.black_player = self.agents[1]
 
         # Initialize Black and White players
         self.white_player.compute(Perceptions.WHITE_PLAYER_PERCEPTION.value)
@@ -23,6 +25,20 @@ class GameEnvironment:
 
         self.current_guesser = "Black"
         self.first_turn = True
+
+    def run(self, params: list) -> str:
+        max_tries = params[0]
+
+        # Runs the game for a maximum number of tries
+        for _ in range(1, max_tries + 1):
+            winner = self._play_turn()
+            if winner:
+                print(f"Agent {winner} has won!")
+                return winner
+
+        # If no winner is found within the maximum tries, it's a draw
+        print("It is a draw")
+        return "Draw"
 
     def _play_turn(self) -> Optional[str]:
         # Black turn to guess
@@ -70,15 +86,3 @@ class GameEnvironment:
         if "0,4" == self.last_black_response:
             return "White"
         return None
-
-    def run_game(self, max_tries: int = 20) -> str:
-        # This function runs the game for a maximum number of tries
-        for _ in range(1, max_tries + 1):
-            winner = self._play_turn()
-            if winner:
-                print(f"Agent {winner} has won!")
-                return winner
-
-        # If no winner is found within the maximum tries, it's a draw
-        print("It is a draw")
-        return "Draw"

@@ -1,11 +1,11 @@
-from agent import Agent
+from agents.agent_interface import AgentInterface
 
-from code_breaker_agent import CodeBreakerAgent
-from code_maker_agent import CodeMakerAgent
-from enums import PlayerRole, Perceptions
+from agents.code_breaker_agent import CodeBreakerAgent
+from agents.code_maker_agent import CodeMakerAgent
+from common.enums import PlayerRole, Perceptions
 
 
-class BullsAndCowsAgent(Agent):
+class BullsAndCowsAgent(AgentInterface):
     def __init__(self):
         self.code_breaker = CodeBreakerAgent()
         self.code_maker = CodeMakerAgent()
@@ -32,7 +32,7 @@ class BullsAndCowsAgent(Agent):
             # Throw an error if the role is not assigned before playing
             raise Exception("Error in perception: role is not assigned")
         elif perception == Perceptions.FIRST_GUESS_PERCEPTION.value:
-            # The code maker role should't accept the first guess perception
+            # The code maker role shouldn't accept the first guess perception
             if self.role == PlayerRole.CODE_MAKER:
                 raise Exception(
                     """Error in perception: the CODE_MAKER

@@ -1,13 +1,13 @@
-from agent import Agent
-from utils import (
+from agents.agent_interface import AgentInterface
+from common.utils import (
     generate_all_4_number_permutations,
     calculate_cows_and_bulls,
     is_valid_feedback,
 )
-from enums import Perceptions
+from common.enums import Perceptions
 
 
-class CodeBreakerAgent(Agent):
+class CodeBreakerAgent(AgentInterface):
     def __init__(self):
         self.possible_numbers = generate_all_4_number_permutations()
         self.guess = None

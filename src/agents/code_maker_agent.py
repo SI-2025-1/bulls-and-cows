@@ -1,8 +1,12 @@
-from agent import Agent
-from utils import is_valid_guess, generate_random_secret, calculate_cows_and_bulls
+from agents.agent_interface import AgentInterface
+from common.utils import (
+    is_valid_guess,
+    generate_random_secret,
+    calculate_cows_and_bulls,
+)
 
 
-class CodeMakerAgent(Agent):
+class CodeMakerAgent(AgentInterface):
     def __init__(self):
         self.secret = generate_random_secret()
 

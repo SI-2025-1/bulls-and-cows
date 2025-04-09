@@ -1,5 +1,7 @@
 # Bulls And Cows solution based on Agents
 
+## Prerequisites
+ 1. Python version >= 3.3
 
 ## Setting up your development environment
 

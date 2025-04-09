@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
 
-from src.code_breaker_agent import CodeBreakerAgent
+from src.agents.code_breaker_agent import CodeBreakerAgent
 
 
 class TestCodeBreakerAgent:
@@ -10,7 +10,7 @@ class TestCodeBreakerAgent:
     @pytest.fixture
     def generate_all_4_number_permutations_mock(self):
         with patch(
-            "src.code_breaker_agent.generate_all_4_number_permutations"
+            "src.agents.code_breaker_agent.generate_all_4_number_permutations"
         ) as unit_service_mock:
             unit_service_mock.return_value = self.possible_numbers.copy()
             yield unit_service_mock

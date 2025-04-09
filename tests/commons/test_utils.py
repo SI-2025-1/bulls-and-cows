@@ -1,4 +1,4 @@
-from src.utils import (
+from src.common.utils import (
     generate_all_4_number_permutations,
     generate_random_secret,
     is_valid_guess,

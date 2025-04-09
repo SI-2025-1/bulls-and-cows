@@ -8,7 +8,7 @@
    python -m venv .venv
    ```
 2. Activate the virtual environment\
-   a. Unix/Linux: 
+   a. Unix/Linux:
       ```commandline
       source .venv/bin/activate
       ```
@@ -26,7 +26,7 @@
    ```
 
 
-## Run the project
+## Run the game in your terminal
 ```bash
    make run
 ```

@@ -7,6 +7,8 @@ from agents.agent_interface import AgentInterface
 
 
 class BullsAndCowsEnvironment(EnvironmentInterface):
+    DEFAULT_MAX_TRIES = 20
+
     def __init__(self, agents: tuple[AgentInterface]):
         super().__init__(agents)
 
@@ -29,17 +31,18 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
         self.is_first_turn = True
 
     def run(self, params: list) -> str:
-        max_tries = params[0]
+        max_tries = self.DEFAULT_MAX_TRIES
+        # Get the maximum number of tries from the parameters
+        if params and len(params) > 0:
+            max_tries = params[0]
 
         # Runs the game for a maximum number of tries
-        for _ in range(1, max_tries + 1):
+        for _ in range(0, max_tries):
             winner = self._play_turn()
             if winner:
-                print(f"Agent {winner} has won!")
                 return winner
 
         # If no winner is found within the maximum tries, it's a draw
-        print("It is a draw")
         return "Draw"
 
     def _play_turn(self) -> Optional[str]:

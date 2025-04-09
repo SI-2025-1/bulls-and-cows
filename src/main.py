@@ -9,4 +9,5 @@ max_number_of_tries = 20
 
 # Initialize the game environment and start the game
 environment = BullsAndCowsEnvironment(agents)
-environment.run([max_number_of_tries])
+play_result = environment.run([max_number_of_tries])
+print(f"Game result: {play_result}")

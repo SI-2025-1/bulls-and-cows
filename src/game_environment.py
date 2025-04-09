@@ -9,32 +9,44 @@ class GameEnvironment:
 
         self.black_player = BullsAndCowsAgent()
 
+        # Initialize Black and White players
         self.white_player.compute("B")
 
         self.black_player.compute("N")
 
-        self.last_white_response = self.white_player.compute("L")
+        # Get the first guess from White
+        # The last response is used as an input in each turn
+        self.last_white_response = self.white_player.compute()
         self.last_black_response = None
 
         self.current_guesser = "Black"
         self.first_turn = True
 
     def _play_turn(self) -> Optional[str]:
+        # Black turn to guess
         if self.current_guesser == "Black":
             black_response = self.black_player.compute(self.last_white_response)
 
+            # Logic for the first turn only
             if self.first_turn:
+                # If it's the first turn, we need to check if the white player
+                # has guessed correctly
                 winner = self.get_winner()
                 if winner:
                     return winner
+
                 self.last_black_response = black_response
-                black_response = self.black_player.compute("L")
+
+                # Get the first guess from Black at the first turn
+                black_response = self.black_player.compute()
                 self.first_turn = False
 
             white_response = self.white_player.compute(black_response)
             self.last_white_response = white_response
 
             self.current_guesser = "White"
+
+        # White turn to guess
         else:
             white_response = self.white_player.compute(self.last_black_response)
 
@@ -43,6 +55,7 @@ class GameEnvironment:
 
             self.current_guesser = "Black"
 
+        # Check if any player has won after the last guess
         winner = self.get_winner()
         if winner:
             return winner
@@ -54,11 +67,14 @@ class GameEnvironment:
             return "White"
         return None
 
-    def run_game(self, max_turns: int = 20) -> str:
-        for _ in range(1, max_turns + 1):
+    def run_game(self, max_tries: int = 20) -> str:
+        # This function runs the game for a maximum number of tries
+        for _ in range(1, max_tries + 1):
             winner = self._play_turn()
             if winner:
                 print(f"Agent {winner} has won!")
                 return winner
+
+        # If no winner is found within the maximum tries, it's a draw
         print("It is a draw")
         return "Draw"

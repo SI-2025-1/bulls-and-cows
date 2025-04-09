@@ -13,7 +13,7 @@ class BullsAndCowsAgent(Agent):
         self.role = None
         self.player_id = None
 
-    def _compute(self, perception: str) -> str:
+    def _compute(self, perception: str = None) -> str:
         if perception == "B":
             if self.role:
                 raise Exception("Error in perception: role is already assigned")
@@ -25,11 +25,16 @@ class BullsAndCowsAgent(Agent):
             self.role = PlayerRole.CODE_MAKER
             return "L"
         elif not self.role:
+            # Throw an error if the role is not assigned before playing
             raise Exception("Error in perception: role is not assigned")
-        elif perception == "L":
+        elif perception is None:
             if self.role == PlayerRole.CODE_MAKER:
-                raise Exception("Error in perception: it is not a CODE_BREAKER turn")
+                raise Exception(
+                    "Error in perception: The CODE_MAKER perception ss None"
+                )
             self.role = PlayerRole.CODE_MAKER
+
+            # At the first guess, the code breaker accepts a none perception
             return self.code_breaker.compute(perception)
         elif self.role == PlayerRole.CODE_MAKER:
             self.role = PlayerRole.CODE_BREAKER
@@ -40,7 +45,7 @@ class BullsAndCowsAgent(Agent):
 
     # This adds logging capabilities to the _compute function
     # which contains all the agent logic
-    def compute(self, perception: str) -> str:
+    def compute(self, perception: str = None) -> str:
         agent_id = self._get_id_by_perception(perception)
         role = self._get_role_name_by_perception(perception)
 

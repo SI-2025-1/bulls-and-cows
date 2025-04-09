@@ -2,5 +2,5 @@ from enum import Enum
 
 
 class PlayerRole(Enum):
-    CODE_MAKER = "B"
-    CODE_BREAKER = "N"
+    CODE_MAKER = "N"
+    CODE_BREAKER = "B"

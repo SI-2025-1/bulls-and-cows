@@ -12,7 +12,8 @@ def is_valid_guess(guess: str) -> bool:
 
 def is_valid_feedback(feedback: str) -> bool:
     return (
-        len(feedback) == 3
+        feedback
+        and len(feedback) == 3
         and feedback[1] == ","
         and feedback[0].isdigit()
         and feedback[2].isdigit()

@@ -11,8 +11,8 @@ class CodeBreakerAgent(Agent):
         self.possible_numbers = generate_all_4_number_permutations()
         self.guess = None
 
-    def compute(self, perception: str = None):
-        if not perception:
+    def compute(self, perception: str):
+        if perception == "L":
             return self._get_latest_guess()
 
         if not is_valid_feedback(perception):

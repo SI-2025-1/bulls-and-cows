@@ -13,46 +13,45 @@ class GameEnvironment:
 
         self.black_player.compute("N")
 
-        self.round_responses = {
-            "Black": [],
-            "White": [],
-        }
+        self.last_white_response = self.white_player.compute("L")
+        self.last_black_response = None
 
-        self.current_guesser = "B"
+        self.current_guesser = "Black"
         self.first_turn = True
 
     def _play_turn(self) -> Optional[str]:
-        if self.current_guesser == "B":
-            if self.first_turn:
-                last_white_response = self.white_player.compute("L")
-            else:
-                last_white_response = self.round_responses["White"][-2]
-
-            black_response = self.black_player.compute(last_white_response)
-            self.round_responses["Black"].append(black_response)
+        if self.current_guesser == "Black":
+            black_response = self.black_player.compute(self.last_white_response)
 
             if self.first_turn:
+                winner = self.get_winner()
+                if winner:
+                    return winner
+                self.last_black_response = black_response
                 black_response = self.black_player.compute("L")
-                self.round_responses["Black"].append(black_response)
                 self.first_turn = False
 
             white_response = self.white_player.compute(black_response)
-            self.round_responses["White"].append(white_response)
-            self.current_guesser = "N"
-        else:
-            last_black_response = self.round_responses["Black"][-2]
+            self.last_white_response = white_response
 
-            white_response = self.white_player.compute(last_black_response)
-            self.round_responses["White"].append(white_response)
+            self.current_guesser = "White"
+        else:
+            white_response = self.white_player.compute(self.last_black_response)
 
             black_response = self.black_player.compute(white_response)
-            self.round_responses["Black"].append(black_response)
+            self.last_black_response = black_response
+
+            self.current_guesser = "Black"
+
+        winner = self.get_winner()
+        if winner:
+            return winner
 
     def get_winner(self) -> Optional[str]:
-        if "0,4" in self.round_responses["Black"]:
-            return "White"
-        if "0,4" in self.round_responses["White"]:
+        if "0,4" == self.last_white_response:
             return "Black"
+        if "0,4" == self.last_black_response:
+            return "White"
         return None
 
     def run_game(self, max_turns: int = 20) -> str:

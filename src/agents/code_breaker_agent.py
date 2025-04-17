@@ -1,3 +1,5 @@
+import random
+
 from agents.agent_interface import AgentInterface
 from common.utils import (
     generate_all_4_number_permutations,
@@ -45,4 +47,5 @@ class CodeBreakerAgent(AgentInterface):
         if not self.possible_numbers:
             raise NoPossibleGuessError()
 
-        return self.possible_numbers[0]
+        random_index = random.randint(0, len(self.possible_numbers) - 1)
+        return self.possible_numbers[random_index]

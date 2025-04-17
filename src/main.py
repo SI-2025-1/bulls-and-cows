@@ -6,9 +6,12 @@ from agents.dummy_bulls_and_cows_agent import DummyBullsAndCowsAgent
 agents = (BullsAndCowsAgent(), DummyBullsAndCowsAgent())
 
 # Max number of tries
-max_number_of_tries = 20
+max_number_of_tries = 10
+
+# Display game status
+display_game_status = True
 
 # Initialize the game environment and start the game
 environment = BullsAndCowsEnvironment(agents)
-play_result = environment.run([max_number_of_tries])
+play_result = environment.run((max_number_of_tries, display_game_status))
 print(f"Game result: {play_result}")

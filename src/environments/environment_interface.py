@@ -9,5 +9,5 @@ class EnvironmentInterface(metaclass=ABCMeta):
         self.agents = agents
 
     @abstractmethod
-    def run(self, params: list) -> str:
+    def run(self, params: tuple) -> str:
         pass

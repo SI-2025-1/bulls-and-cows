@@ -4,6 +4,7 @@ from common.utils import (
     generate_random_secret,
     calculate_cows_and_bulls,
 )
+from common.errors import InvalidPerceptionFormatError
 
 
 class CodeMakerAgent(AgentInterface):
@@ -12,7 +13,7 @@ class CodeMakerAgent(AgentInterface):
 
     def compute(self, perception: str) -> tuple[bool, str]:
         if not is_valid_guess(perception):
-            raise ValueError("Invalid perception format")
+            raise InvalidPerceptionFormatError()
 
         cows, bulls = calculate_cows_and_bulls(perception, self.secret)
 

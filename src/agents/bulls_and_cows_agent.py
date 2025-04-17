@@ -4,6 +4,7 @@ from agents.code_breaker_agent import CodeBreakerAgent
 from agents.dummy_code_breaker_agent import DummyCodeBreakerAgent
 from agents.code_maker_agent import CodeMakerAgent
 from common.enums import PlayerRole, Perceptions
+from common.errors import UnexpectedPerceptionError, RoleAlreadyAssignedError
 
 
 class BullsAndCowsAgent(AgentInterface):
@@ -16,27 +17,27 @@ class BullsAndCowsAgent(AgentInterface):
     def compute(self, perception: str) -> str:
         if perception == Perceptions.WHITE_PLAYER_PERCEPTION.value:
             if self.role:
-                raise Exception("Error in perception: role is already assigned")
+                raise RoleAlreadyAssignedError()
 
             # White player starts as the code breaker
             self.role = PlayerRole.CODE_BREAKER
             return Perceptions.BLACK_PLAYER_PERCEPTION.value
         elif perception == Perceptions.BLACK_PLAYER_PERCEPTION.value:
             if self.role:
-                raise Exception("Error in perception: role is already assigned")
+                raise RoleAlreadyAssignedError()
 
             # Black player starts as the code maker
             self.role = PlayerRole.CODE_MAKER
             return Perceptions.FIRST_GUESS_PERCEPTION.value
         elif not self.role:
             # Throw an error if the role is not assigned before playing
-            raise Exception("Error in perception: role is not assigned")
+            raise UnexpectedPerceptionError("No role assigned yet")
         elif perception == Perceptions.FIRST_GUESS_PERCEPTION.value:
-            # The code maker role shouldn't accept the first guess perception
+            # The code breaker role is the only one that
+            # accepts the first guess perception
             if self.role == PlayerRole.CODE_MAKER:
-                raise Exception(
-                    """Error in perception: the CODE_MAKER
-                    doesn't accept the first guess perception"""
+                raise UnexpectedPerceptionError(
+                    "the CODE_MAKER doesn't accept the first guess perception"
                 )
             self.role = PlayerRole.CODE_MAKER
 

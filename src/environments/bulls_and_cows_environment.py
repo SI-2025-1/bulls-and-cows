@@ -12,9 +12,57 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
     def __init__(self, agents: tuple[AgentInterface]):
         super().__init__(agents)
 
+    def run(self, params: tuple[int, bool] = None) -> str:
+        """Runs a game of Bulls and Cows between two agents.
+        The game is played for a maximum number of tries.
+        The winner is the player who guesses the secret code first.
+
+        Receives a tuple of parameters:
+        - params[0]: max_tries (int) - The maximum number of tries for the game.
+        - params[1]: display_game_status (bool) - Whether to display the game status.
+
+        Returns a string with the following format:
+        - "White,tries" if White player wins,
+        - "Black,tries" if Black player wins,
+        - ",max_tries" if it's a draw."""
+
+        # Set the maximum number of tries to the default value
+        max_tries = self.DEFAULT_MAX_TRIES
+        # Get the maximum number of tries from the parameters
+        if params:
+            max_tries = params[0]
+            display_game_status = params[1] if len(params) > 1 else False
+
+        self._prepare(display_game_status)
+
+        # Runs the game for a maximum number of tries
+        while (
+            self.black_player.tries < max_tries and self.white_player.tries < max_tries
+        ):
+            game_conclusion = self._play_turn()
+            if game_conclusion:
+                # If a winner is found, return the result
+                winner, tries = game_conclusion
+                return f"{winner},{tries}"
+
+        # If no winner is found within the maximum tries, it's a draw
+        return f",{max_tries}"
+
+    def _prepare(self, display_game_status: bool) -> None:
+        """Prepares the environment for the game to allow doing multiple runs
+        within the same instance"""
+
+        # Initialize players
+        self.agents[0].__init__()
+        self.agents[1].__init__()
+
         # Instantiate the agents as players
-        self.white_player = EnvironmentPlayer("White", self.agents[0])
-        self.black_player = EnvironmentPlayer("Black", self.agents[1])
+        self.white_player = EnvironmentPlayer(
+            "White", self.agents[0], display_game_status
+        )
+        self.black_player = EnvironmentPlayer(
+            "Black", self.agents[1], display_game_status
+        )
 
         # Initialize Black and White players
         self.white_player.compute_action(Perceptions.WHITE_PLAYER_PERCEPTION.value)
@@ -30,24 +78,11 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
         self.current_guesser = self.black_player.id
         self.is_first_turn = True
 
-    def run(self, params: list) -> str:
-        max_tries = self.DEFAULT_MAX_TRIES
-        # Get the maximum number of tries from the parameters
-        if params and len(params) > 0:
-            max_tries = params[0]
-
-        # Runs the game for a maximum number of tries
-        for _ in range(0, max_tries):
-            game_conclusion = self._play_turn()
-            if game_conclusion:
-                # If a winner is found, return the result
-                winner, tries = game_conclusion
-                return self._format_result(winner, tries)
-
-        # If no winner is found within the maximum tries, it's a draw
-        return "Maximum number of tries reached. No winner."
-
     def _play_turn(self) -> Optional[tuple[str, int]]:
+        """Plays a turn of the game. The first turn is played by the white player.
+        The game alternates between the two players until one of them wins or
+        the maximum number of tries is reached."""
+
         # Black turn to guess
         if self.current_guesser == self.black_player.id:
             black_response = self.black_player.compute_action(
@@ -94,12 +129,12 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
         if winner:
             return winner, tries
 
-    def _check_for_a_winner(self) -> Optional[str]:
-        if "0,4" == self.white_player.last_response:
-            return self.black_player.id, self.black_player.tries
+    def _check_for_a_winner(self) -> tuple[Optional[str], Optional[str]]:
+        """Checks if any player has won the game.
+        Returns a tuple with the winner and the number of tries."""
+
         if "0,4" == self.black_player.last_response:
             return self.white_player.id, self.white_player.tries
+        if "0,4" == self.white_player.last_response:
+            return self.black_player.id, self.black_player.tries
         return None, None
-
-    def _format_result(self, winner: str, tries: int) -> str:
-        return f"{winner} wins in {tries} tries."

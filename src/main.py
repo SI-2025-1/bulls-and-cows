@@ -1,17 +1,26 @@
-from environments.bulls_and_cows_environment import BullsAndCowsEnvironment
+from environments.performance_measure_environment import PerformanceMeasureEnvironment
 from agents.bulls_and_cows_agent import BullsAndCowsAgent
-from agents.dummy_bulls_and_cows_agent import DummyBullsAndCowsAgent
 
-# Create a list of agents (players)
-agents = (BullsAndCowsAgent(), DummyBullsAndCowsAgent())
 
-# Max number of tries
-max_number_of_tries = 10
+if __name__ == "__main__":
+    # Instantiate the agent to measure
+    agent_to_measure = BullsAndCowsAgent()
 
-# Display game status
-display_game_status = True
+    # Initialize the performance measure environment with the agent to measure
+    environment = PerformanceMeasureEnvironment((agent_to_measure,))
 
-# Initialize the game environment and start the game
-environment = BullsAndCowsEnvironment(agents)
-play_result = environment.run((max_number_of_tries, display_game_status))
-print(f"Game result: {play_result}")
+    total_runs = 10000
+
+    print(f"Running {total_runs} games to measure the Agent performance")
+    print("Please wait...")
+
+    # Run the performance measure environment with the specified number of runs
+    measure_result = environment.run((total_runs,))
+
+    # Extract the measurement values from the result string
+    min_tries, average_tries, max_tries = measure_result.split(",")
+
+    print("\nPerformance Measure Results:")
+    print(f"\tMinimum: {min_tries}")
+    print(f"\tAverage: {average_tries}")
+    print(f"\tMaximum: {max_tries}")

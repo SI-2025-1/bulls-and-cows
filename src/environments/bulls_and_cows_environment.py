@@ -26,9 +26,11 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
         - "Black,tries" if Black player wins,
         - ",max_tries" if it's a draw."""
 
-        # Set the maximum number of tries to the default value
+        # Set the default parameters
         max_tries = self.DEFAULT_MAX_TRIES
-        # Get the maximum number of tries from the parameters
+        display_game_status = False
+
+        # Set the parameters if provided
         if params:
             max_tries = params[0]
             display_game_status = params[1] if len(params) > 1 else False

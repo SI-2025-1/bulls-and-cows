@@ -19,24 +19,24 @@ class TestCodeBreakerAgent:
         agent = CodeBreakerAgent()
         assert agent.possible_numbers is not None
         assert agent.possible_numbers == self.possible_numbers
-        assert agent.last_guess is self.possible_numbers[0]
+        assert agent.last_guess is None
 
         generate_all_4_number_permutations_mock.assert_called_once()
 
-    def test_get_next_guess(self, generate_all_4_number_permutations_mock):
+    def test_find_next_guess(self, generate_all_4_number_permutations_mock):
         agent = CodeBreakerAgent()
 
-        guess = agent._get_next_guess()
+        guess = agent._find_next_guess()
 
-        assert guess == self.possible_numbers[0]
-        assert agent.last_guess == self.possible_numbers[0]
+        assert guess in self.possible_numbers
+        assert agent.last_guess == guess
 
         agent.possible_numbers = []
 
         with pytest.raises(
             Exception, match="There are no more possible guesses based on the feedback"
         ):
-            agent._get_next_guess()
+            agent._find_next_guess()
 
     def test_calculate_next_guess(self, generate_all_4_number_permutations_mock):
         agent = CodeBreakerAgent()

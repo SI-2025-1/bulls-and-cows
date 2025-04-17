@@ -13,12 +13,18 @@ from common.errors import InvalidPerceptionFormatError, NoPossibleGuessError
 class CodeBreakerAgent(AgentInterface):
     def __init__(self):
         self.possible_numbers = generate_all_4_number_permutations()
-        self.last_guess = self._get_next_guess()
+        self.last_guess = None
 
     def compute(self, perception: str) -> str:
+        """Analyzes the feedback and returns the next guess.
+        Args:
+            perception (str): The feedback from the code maker.
+        Returns:
+            str: The next guess."""
+
         if perception == Perceptions.FIRST_GUESS_PERCEPTION.value:
             # Return the first guess
-            return self.last_guess
+            return self._find_next_guess()
 
         if not is_valid_feedback(perception):
             raise InvalidPerceptionFormatError()
@@ -40,12 +46,12 @@ class CodeBreakerAgent(AgentInterface):
                 new_possible_numbers.append(candidate)
         self.possible_numbers = new_possible_numbers
 
-        self.last_guess = self._get_next_guess()
-        return self.last_guess
+        return self._find_next_guess()
 
-    def _get_next_guess(self) -> str:
+    def _find_next_guess(self) -> str:
         if not self.possible_numbers:
             raise NoPossibleGuessError()
 
         random_index = random.randint(0, len(self.possible_numbers) - 1)
-        return self.possible_numbers[random_index]
+        self.last_guess = self.possible_numbers[random_index]
+        return self.last_guess

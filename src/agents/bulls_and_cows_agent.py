@@ -1,13 +1,14 @@
 from agents.agent_interface import AgentInterface
 
 from agents.code_breaker_agent import CodeBreakerAgent
+from agents.dummy_code_breaker_agent import DummyCodeBreakerAgent
 from agents.code_maker_agent import CodeMakerAgent
 from common.enums import PlayerRole, Perceptions
 
 
 class BullsAndCowsAgent(AgentInterface):
-    def __init__(self):
-        self.code_breaker = CodeBreakerAgent()
+    def __init__(self, is_dummy: bool = False):
+        self.code_breaker = DummyCodeBreakerAgent() if is_dummy else CodeBreakerAgent()
         self.code_maker = CodeMakerAgent()
         self.last_guess = None
         self.role = None

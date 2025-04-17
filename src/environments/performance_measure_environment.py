@@ -24,6 +24,7 @@ class PerformanceMeasureEnvironment(EnvironmentInterface):
 
         Receives a tuple of parameters:
         - params[0]: total_runs (int) - The number of games to run.
+        - params[1]: max_tries (int) - The maximum number of tries for each game.
 
         Returns a string with the following format:
 
@@ -33,13 +34,13 @@ class PerformanceMeasureEnvironment(EnvironmentInterface):
             - max_tries: The maximum number of tries taken to win.
         """
 
-        total_runs = params[0]
+        total_runs, max_tries_per_game = params
 
         tries_sum = 0
         max_tries = 0
         min_tries = math.inf
 
-        results = self._run_parallel(total_runs)
+        results = self._run_parallel(total_runs, max_tries_per_game)
 
         for result in results:
             min_tries = min(min_tries, int(result[0]))
@@ -50,10 +51,13 @@ class PerformanceMeasureEnvironment(EnvironmentInterface):
 
         return f"{min_tries},{average},{max_tries}"
 
-    def _run_parallel(self, total_runs: int) -> list[tuple[int, int, int]]:
+    def _run_parallel(
+        self, total_runs: int, max_tries_per_game: int
+    ) -> list[tuple[int, int, int]]:
         """Runs the specified number of games in parallel and returns the result list.
         Args:
             total_runs (int): The number of games to run in this chunk.
+            max_tries_per_game (int): The maximum number of tries for each game.
         Returns:
             result_ist (list[tuple[int, int, int]]): A list of tuples containing the
             min, sum, and max tries for each chunk.
@@ -68,7 +72,8 @@ class PerformanceMeasureEnvironment(EnvironmentInterface):
             # and distribute the workload evenly among them
             with Pool(total_chunks) as p:
                 results = p.map(
-                    self._run_parallel_chunk, [chunk_size for _ in range(total_chunks)]
+                    self._run_parallel_chunk,
+                    [(chunk_size, max_tries_per_game) for _ in range(total_chunks)],
                 )
         except KeyboardInterrupt:
             p.terminate() if p else None
@@ -81,21 +86,26 @@ class PerformanceMeasureEnvironment(EnvironmentInterface):
 
         return results
 
-    def _run_parallel_chunk(self, total_runs: int) -> tuple[int, int, int]:
+    def _run_parallel_chunk(self, params: tuple[int, int]) -> tuple[int, int, int]:
         """Runs a chunk of games in parallel and returns the min, sum, and max tries.
+
         Args:
-            total_runs (int): The number of games to run in this chunk.
+            params (tuple[int, int]): A tuple containing the number of games to run
+            and the maximum number of tries for each game.
         Returns:
             run_results (tuple[int, int, int]): A tuple containing the
             min, sum, and max tries.
         """
+        total_runs, max_tries_per_game = params
+
         tries_sum = 0
         max_tries = 0
         min_tries = math.inf
 
         for _ in range(total_runs):
-            play_result = self.bulls_and_cows_environment.run()
+            play_result = self.bulls_and_cows_environment.run((max_tries_per_game,))
             _, tries = play_result.split(",")
+
             tries_sum += int(tries)
             min_tries = min(min_tries, int(tries))
             max_tries = max(max_tries, int(tries))

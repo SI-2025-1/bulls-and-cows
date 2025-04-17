@@ -2,8 +2,16 @@ import random
 from itertools import permutations
 
 
+ALL_FOUR_NUMBER_PERMUTATIONS = None
+
+
 def generate_all_4_number_permutations():
-    return ["".join(p) for p in permutations("0123456789", 4)]
+    global ALL_FOUR_NUMBER_PERMUTATIONS
+    if ALL_FOUR_NUMBER_PERMUTATIONS is None:
+        ALL_FOUR_NUMBER_PERMUTATIONS = [
+            "".join(p) for p in permutations("0123456789", 4)
+        ]
+    return ALL_FOUR_NUMBER_PERMUTATIONS.copy()
 
 
 def is_valid_guess(guess: str) -> bool:

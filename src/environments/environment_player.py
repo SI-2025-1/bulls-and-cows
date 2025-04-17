@@ -6,6 +6,7 @@ class EnvironmentPlayer:
         self.id = id
         self.agent = agent
         self.last_response = None
+        self.tries = 0
 
     # This method is called by the environment to compute the action.
     # It prints the perception and response of the agent

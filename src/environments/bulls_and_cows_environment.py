@@ -38,14 +38,16 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
 
         # Runs the game for a maximum number of tries
         for _ in range(0, max_tries):
-            winner = self._play_turn()
-            if winner:
-                return winner
+            game_conclusion = self._play_turn()
+            if game_conclusion:
+                # If a winner is found, return the result
+                winner, tries = game_conclusion
+                return self._format_result(winner, tries)
 
         # If no winner is found within the maximum tries, it's a draw
-        return "Draw"
+        return "Maximum number of tries reached. No winner."
 
-    def _play_turn(self) -> Optional[str]:
+    def _play_turn(self) -> Optional[tuple[str, int]]:
         # Black turn to guess
         if self.current_guesser == self.black_player.id:
             black_response = self.black_player.compute_action(
@@ -56,9 +58,10 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
             if self.is_first_turn:
                 # If it's the first turn, we need to check if the white player
                 # has guessed correctly
-                winner = self._check_for_a_winner()
+                self.white_player.tries += 1
+                winner, tries = self._check_for_a_winner()
                 if winner:
-                    return winner
+                    return winner, tries
 
                 self.black_player.last_response = black_response
 
@@ -69,9 +72,10 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
                 self.is_first_turn = False
 
             white_response = self.white_player.compute_action(black_response)
+            self.black_player.tries += 1
             self.white_player.last_response = white_response
 
-            self.current_guesser = "White"
+            self.current_guesser = self.white_player.id
 
         # White turn to guess
         else:
@@ -80,18 +84,22 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
             )
 
             black_response = self.black_player.compute_action(white_response)
+            self.white_player.tries += 1
             self.black_player.last_response = black_response
 
-            self.current_guesser = "Black"
+            self.current_guesser = self.black_player.id
 
         # Check if any player has won after the last guess
-        winner = self._check_for_a_winner()
+        winner, tries = self._check_for_a_winner()
         if winner:
-            return winner
+            return winner, tries
 
     def _check_for_a_winner(self) -> Optional[str]:
         if "0,4" == self.white_player.last_response:
-            return self.black_player.id
+            return self.black_player.id, self.black_player.tries
         if "0,4" == self.black_player.last_response:
-            return self.white_player.id
-        return None
+            return self.white_player.id, self.white_player.tries
+        return None, None
+
+    def _format_result(self, winner: str, tries: int) -> str:
+        return f"{winner} wins in {tries} tries."

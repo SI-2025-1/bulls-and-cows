@@ -3,7 +3,7 @@ from environments.environment_player import EnvironmentPlayer
 from environments.tournament_environment import TournamentEnvironment
 
 # from agents.external_agents._404_agent import _404Agent
-# from agents.external_agents._555_agent import _555Agent
+from agents.external_agents._555_agent import _555Agent
 from agents.external_agents.AED_agent import AEDAgent
 from agents.external_agents.culiquitacati_agent import CuliquitacatiAgent
 from agents.external_agents.fancyai_agent import FancyaiAgent
@@ -19,7 +19,7 @@ def run_tournament():
     players = [
         EnvironmentPlayer("Jhonatan", BullsAndCowsAgent()),
         # EnvironmentPlayer("404", _404Agent()),
-        # EnvironmentPlayer("555", _555Agent()),
+        EnvironmentPlayer("555", _555Agent()),
         EnvironmentPlayer("AED", AEDAgent()),
         EnvironmentPlayer("Culiquitacati", CuliquitacatiAgent()),
         EnvironmentPlayer("FancyAI", FancyaiAgent()),

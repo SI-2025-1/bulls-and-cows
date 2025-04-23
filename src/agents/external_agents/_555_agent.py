@@ -47,9 +47,8 @@ class _555Agent(AgentInterface):
             return f"#{self.ultimo_intento}"
 
         # Recepción de intento del oponente
-        elif percepcion.startswith("#"):
-            intento = percepcion[1:]
-            return self.calcular_picas_fijas(intento)
+        elif len(percepcion) == 4:
+            return self.calcular_picas_fijas(percepcion)
 
         # Recepción de pistas (picas,fijas)
         elif "," in percepcion:

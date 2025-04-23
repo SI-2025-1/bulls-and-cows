@@ -21,7 +21,7 @@ class BullsAndCowsAgent(AgentInterface):
 
             # White player starts as the code breaker
             self.role = PlayerRole.CODE_BREAKER
-            return Perceptions.BLACK_PLAYER_PERCEPTION.value
+            return Perceptions.FIRST_GUESS_PERCEPTION.value
         elif perception == Perceptions.BLACK_PLAYER_PERCEPTION.value:
             if self.role:
                 raise RoleAlreadyAssignedError()

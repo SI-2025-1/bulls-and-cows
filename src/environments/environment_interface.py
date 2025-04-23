@@ -1,12 +1,12 @@
 from abc import abstractmethod
 from abc import ABCMeta
 
-from agents.agent_interface import AgentInterface
+from environments.environment_player import EnvironmentPlayer
 
 
 class EnvironmentInterface(metaclass=ABCMeta):
-    def __init__(self, agents: tuple[AgentInterface]):
-        self.agents = agents
+    def __init__(self, players: tuple[EnvironmentPlayer]):
+        self.players = players
 
     @abstractmethod
     def run(self, params: tuple) -> str:

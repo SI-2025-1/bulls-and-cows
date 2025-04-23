@@ -3,14 +3,13 @@ from typing import Optional
 from common.enums import Perceptions
 from environments.environment_interface import EnvironmentInterface
 from environments.environment_player import EnvironmentPlayer
-from agents.agent_interface import AgentInterface
 
 
 class BullsAndCowsEnvironment(EnvironmentInterface):
     DEFAULT_MAX_TRIES = 20
 
-    def __init__(self, agents: tuple[AgentInterface]):
-        super().__init__(agents)
+    def __init__(self, players: tuple[EnvironmentPlayer]):
+        super().__init__(players)
 
     def run(self, params: tuple[int, bool] = None) -> str:
         """Runs a game of Bulls and Cows between two agents.
@@ -19,7 +18,6 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
 
         Receives a tuple of parameters:
         - params[0]: max_tries (int) - The maximum number of tries for the game.
-        - params[1]: display_game_status (bool) - Whether to display the game status.
 
         Returns a string with the following format:
         - "White,tries" if White player wins,
@@ -28,14 +26,12 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
 
         # Set the default parameters
         max_tries = self.DEFAULT_MAX_TRIES
-        display_game_status = False
 
         # Set the parameters if provided
         if params:
             max_tries = params[0]
-            display_game_status = params[1] if len(params) > 1 else False
 
-        self._prepare(display_game_status)
+        self._prepare()
 
         # Runs the game for a maximum number of tries
         while (
@@ -50,21 +46,16 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
         # If no winner is found within the maximum tries, it's a draw
         return f",{max_tries}"
 
-    def _prepare(self, display_game_status: bool) -> None:
+    def _prepare(self) -> None:
         """Prepares the environment for the game to allow doing multiple runs
         within the same instance"""
 
         # Initialize players
-        self.agents[0].__init__()
-        self.agents[1].__init__()
+        self.players[0].reset()
+        self.players[1].reset()
 
-        # Instantiate the agents as players
-        self.white_player = EnvironmentPlayer(
-            "White", self.agents[0], display_game_status
-        )
-        self.black_player = EnvironmentPlayer(
-            "Black", self.agents[1], display_game_status
-        )
+        self.white_player = self.players[0]
+        self.black_player = self.players[1]
 
         # Initialize Black and White players
         self.white_player.compute_action(Perceptions.WHITE_PLAYER_PERCEPTION.value)

@@ -2,20 +2,29 @@ import math
 from multiprocessing import Pool
 
 from environments.environment_interface import EnvironmentInterface
-from agents.agent_interface import AgentInterface
 from agents.dummy_bulls_and_cows_agent import DummyBullsAndCowsAgent
 from environments.bulls_and_cows_environment import BullsAndCowsEnvironment
+from environments.environment_player import EnvironmentPlayer
 
 
 class PerformanceMeasureEnvironment(EnvironmentInterface):
     MAX_PARALLEL_RUNS = 16
 
-    def __init__(self, agents: tuple[AgentInterface]):
-        agent_to_measure = agents[0]
+    def __init__(self, players: tuple[EnvironmentPlayer]):
+        player_to_measure = players[0]
 
-        super().__init__((agent_to_measure, DummyBullsAndCowsAgent()))
+        super().__init__(
+            (
+                player_to_measure,
+                EnvironmentPlayer(
+                    "Dummy",
+                    DummyBullsAndCowsAgent(),
+                    player_to_measure.display_movements,
+                ),
+            )
+        )
 
-        self.bulls_and_cows_environment = BullsAndCowsEnvironment(self.agents)
+        self.bulls_and_cows_environment = BullsAndCowsEnvironment(self.players)
 
     def run(self, params: tuple[int]) -> str:
         """Runs a set of games of Bulls and Cows between the

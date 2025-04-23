@@ -13,6 +13,7 @@ repos:
         args:
           [
             "--max-line-length=88",
+            "--exclude=src/agents/external_agents/*",
           ]
   - repo: https://github.com/psf/black
     rev: 23.1.0
@@ -23,7 +24,13 @@ repos:
     rev: v0.9.0
     hooks:
       - id: xenon
-        args: ["-bB", "-mB", "-aB"]
+        args:
+          [
+            "--exclude=src/agents/external_agents/*",
+            "-bB",
+            "-mB",
+            "-aB"
+          ]
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.4.0
     hooks:

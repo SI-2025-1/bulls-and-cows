@@ -1,0 +1,82 @@
+import random
+from itertools import permutations
+
+from agents.agent_interface import AgentInterface
+
+
+class Grupo3Agent(AgentInterface):
+    def __init__(self):
+        self.posibles = [
+            "".join(p) for p in permutations("0123456789", 4)
+        ]  # Todos los números posibles de 4 dígitos
+        self.intento_actual = None
+        self.ultimo_intento = None
+        self.secreto = self._generar_secreto()
+        self.rol_adivinador = False  # Por defecto no empieza adivinando
+        self.turno_inicial_realizado = False
+
+    def _generar_secreto(self):
+        return "".join(
+            random.sample("0123456789", 4)
+        )  # Genera un número secreto aleatorio de 4 dígitos
+
+    def _evaluar(self, secreto, intento):
+        fijas = sum(
+            a == b for a, b in zip(secreto, intento)
+        )  # Fijas: posición correcta
+        picas = (
+            sum(min(secreto.count(d), intento.count(d)) for d in set(intento)) - fijas
+        )  # Picas: número correcto, posición incorrecta
+        return (picas, fijas)
+
+    def _filtrar_posibles(self, picas, fijas):
+        # Filtra las posibles combinaciones basándose en el último intento realizado
+        self.posibles = [
+            num
+            for num in self.posibles
+            if self._evaluar(num, self.ultimo_intento) == (picas, fijas)
+        ]
+
+    def compute(self, percep):
+        if percep == "B":
+            # El agente empieza adivinando
+            self.rol_adivinador = True
+            self.turno_inicial_realizado = False
+            return "L"  # Se inicia el juego
+
+        elif percep == "N":
+            # El agente empieza generando un número
+            self.rol_adivinador = False
+            self.turno_inicial_realizado = False
+            return "L"  # Se inicia el juego
+
+        elif percep == "L":
+            # Cuando recibe 'L', se debe generar el primer intento de 4 dígitos
+            if self.rol_adivinador and not self.turno_inicial_realizado:
+                self.intento_actual = self.posibles[0]
+                self.ultimo_intento = self.intento_actual
+                self.turno_inicial_realizado = True
+                return self.intento_actual
+            elif self.rol_adivinador:
+                self.intento_actual = self.posibles[0]
+                self.ultimo_intento = self.intento_actual
+                return self.intento_actual
+            return None  # Caso que no debería suceder
+
+        elif "," in percep and percep.count(",") == 1:
+            # Recibe un número de picas y fijas separados por coma
+            picas, fijas = map(int, percep.strip().split(","))
+            self._filtrar_posibles(picas, fijas)
+            if self.posibles:
+                self.intento_actual = self.posibles[0]
+                self.ultimo_intento = self.intento_actual
+                return self.intento_actual
+            else:
+                return None  # Sin más opciones posibles
+
+        elif percep.isdigit() and len(percep) == 4 and len(set(percep)) == 4:
+            # Si recibe un número de 4 dígitos, calcula las picas y fijas
+            picas, fijas = self._evaluar(self.secreto, percep)
+            return f"{picas},{fijas}"
+
+        return "0,0"

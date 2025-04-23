@@ -9,6 +9,12 @@ class EnvironmentPlayer:
         self.tries = 0
         self.display_movements = display_movements
 
+    def reset(self):
+        """Resets the player to its initial state."""
+        self.last_response = None
+        self.tries = 0
+        self.agent.__init__()
+
     # This method is called by the environment to compute the action.
     # It prints the perception and response of the agent
     # and returns the response.

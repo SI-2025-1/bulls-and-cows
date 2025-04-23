@@ -27,4 +27,11 @@ class EnvironmentPlayer:
         if self.display_movements:
             print(f"\tresponse: {result}")
 
-        return result
+        return (
+            str(result)
+            .strip()
+            .replace("(", "")
+            .replace(")", "")
+            .replace(" ", "")
+            .replace("#", "")
+        )

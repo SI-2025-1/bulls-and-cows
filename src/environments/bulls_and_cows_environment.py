@@ -11,6 +11,9 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
     def __init__(self, players: tuple[EnvironmentPlayer]):
         super().__init__(players)
 
+        self.white_player = self.players[0]
+        self.black_player = self.players[1]
+
     def run(self, params: tuple[int, bool] = None) -> str:
         """Runs a game of Bulls and Cows between two agents.
         The game is played for a maximum number of tries.
@@ -53,9 +56,6 @@ class BullsAndCowsEnvironment(EnvironmentInterface):
         # Initialize players
         self.players[0].reset()
         self.players[1].reset()
-
-        self.white_player = self.players[0]
-        self.black_player = self.players[1]
 
         # Initialize Black and White players
         self.white_player.compute_action(Perceptions.WHITE_PLAYER_PERCEPTION.value)

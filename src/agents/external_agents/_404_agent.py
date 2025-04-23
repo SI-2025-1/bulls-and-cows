@@ -29,7 +29,7 @@ class _404Agent(AgentInterface):
                 self.last_guess = self.guess_candidates.pop()
                 return self.last_guess
             elif self.generating_mode:
-                return "Listo"
+                return "L"
             else:
                 return "Modo no iniciado"
 
@@ -39,7 +39,7 @@ class _404Agent(AgentInterface):
                 return f"{picas},{fijas}"
             elif self.guessing_mode:
                 self.secret_number = entrada
-                return "Listo"
+                return "L"
             else:
                 return "Modo no iniciado"
 

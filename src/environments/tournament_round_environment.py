@@ -17,25 +17,29 @@ class TournamentRoundEnvironment(EnvironmentInterface):
         for match in matches:
             result = match.run(params)
 
-            winner = self._get_winner(result)
+            first_match_winner = result.split(",")[0]
+            second_match_winner = result.split(",")[1]
+            winner = self._get_winner(first_match_winner, second_match_winner)
             if winner:
                 results.append(winner)
 
-        return result.join(",")
+        return ",".join(results)
 
-    def _get_winner(self, result: str) -> Optional[str]:
-        first_match_winner = result.split(",")[0]
-        second_match_winner = result.split(",")[1]
+    def _get_winner(
+        self, first_match_winner: str, second_match_winner: str
+    ) -> Optional[str]:
+        has_two_winners = first_match_winner and second_match_winner
+
+        is_a_tie = first_match_winner != second_match_winner
 
         if first_match_winner == "Dummy" or second_match_winner == "Dummy":
-            pass
-        elif (
-            first_match_winner
-            and first_match_winner
-            and first_match_winner == second_match_winner
-        ):
+            return None
+        elif has_two_winners and not is_a_tie:
             # One player won both matches
             return first_match_winner
+        elif has_two_winners and is_a_tie:
+            # One player won one match, the other player won the other match
+            return f"{first_match_winner}:{second_match_winner}"
         elif first_match_winner and not second_match_winner:
             # First match has a winner, second match was a draw
             return first_match_winner

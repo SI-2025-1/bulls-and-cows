@@ -18,7 +18,7 @@ class DummyCodeBreakerAgent(AgentInterface):
             return self._calculate_next_guess()
 
         if not is_valid_feedback(perception):
-            raise InvalidPerceptionFormatError()
+            raise InvalidPerceptionFormatError(perception)
 
         _, bulls = map(int, perception.split(","))
         if bulls != 4:

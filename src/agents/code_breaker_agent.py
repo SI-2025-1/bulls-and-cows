@@ -27,7 +27,7 @@ class CodeBreakerAgent(AgentInterface):
             return self._find_next_guess()
 
         if not is_valid_feedback(perception):
-            raise InvalidPerceptionFormatError()
+            raise InvalidPerceptionFormatError(perception)
 
         cows, bulls = map(int, perception.split(","))
         if bulls != 4:

@@ -13,8 +13,7 @@ class CodeMakerAgent(AgentInterface):
 
     def compute(self, perception: str) -> tuple[bool, str]:
         if not is_valid_guess(perception):
-            print(perception)
-            raise InvalidPerceptionFormatError()
+            raise InvalidPerceptionFormatError(perception)
 
         cows, bulls = calculate_cows_and_bulls(perception, self.secret)
 

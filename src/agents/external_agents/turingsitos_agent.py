@@ -53,7 +53,7 @@ class TuringsitosAgent(AgentInterface):
             # Es feedback (picas, fijas) del oponente
             picas, fijas = map(int, perception.split(","))
             self.process_feedback(picas, fijas)
-            return "L"
+            return self.send_guess()
 
         else:
             raise ValueError(f"Percepción inválida: {perception}")

@@ -1,6 +1,6 @@
 class InvalidPerceptionFormatError(Exception):
-    def __init__(self, message: str = "Invalid perception format"):
-        super().__init__(message)
+    def __init__(self, message: str):
+        super().__init__(f"Invalid perception format: {message}")
 
 
 class NoPossibleGuessError(Exception):
